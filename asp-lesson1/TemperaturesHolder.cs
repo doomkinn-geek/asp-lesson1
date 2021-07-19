@@ -82,21 +82,28 @@ namespace asp_lesson1
             }
         }
 
-        public List<Temperature> SelectRecords(DateTime start, DateTime end, out string err)
-        {
+        public int DeleteRange(string start, string end, out string err)
+        {            
             try
             {
+                DateTime startDate = Convert.ToDateTime(start);                
+                DateTime endDate = Convert.ToDateTime(end);
+                foreach (Temperature t in Values)
+                {
+                    if (t.Date >= startDate && t.Date <= endDate)
+                    {
+                        Values.Remove(t);
+                    }
+                }
                 err = null;
-                return Values
-                    .Where(x => (x.Date > start) && (x.Date < end))
-                    .GroupBy(x => x.Date.Date).Select(y => y.ToList()) as List<Temperature>;
+                return 0;
             }
             catch (Exception e)
             {
                 err = e.Message;
-                return null;
+                return -1;
             }
-
         }
+
     }
 }

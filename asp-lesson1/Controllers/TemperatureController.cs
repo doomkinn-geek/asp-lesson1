@@ -54,6 +54,11 @@ namespace asp_lesson1.Controllers
         [HttpDelete]
         public IActionResult Delete([FromQuery] string inDate = "", string outDate = "")
         {
+            int errCode = _holder.DeleteRange(inDate, outDate, out errMessage);
+            if (errCode == -1)
+            {
+                return BadRequest(errMessage);
+            }
             return Ok();
         }
 
