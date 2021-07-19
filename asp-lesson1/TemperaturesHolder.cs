@@ -60,6 +60,7 @@ namespace asp_lesson1
                     .Where(x => (x.Date > start) && (x.Date < end))
                         as List<Temperature>;
             */
+            //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
             try
             {
