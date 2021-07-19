@@ -11,40 +11,49 @@ namespace asp_lesson1.Controllers
     [Route("[controller]")]
     public class TemperatureController : ControllerBase
     {
-        private readonly List<Temperature> _holder;        
-
-        private readonly ILogger<TemperatureController> _logger;
-
-        public TemperatureController(ILogger<TemperatureController> logger)
+        private readonly TemperaturesHolder _holder;
+        private string errMessage;
+        public TemperatureController(TemperaturesHolder holder)
         {
-            _logger = logger;
-            _holder = new List<Temperature>();            
+            _holder = holder;
+            errMessage = "";
+        }
+    
+        [HttpGet]
+        public IEnumerable<Temperature> Get(string inDate, string outDate)
+        {
+            try
+            {
+                return _holder.Get(Convert.ToDateTime(inDate), Convert.ToDateTime(outDate), out errMessage).ToArray();
+            }
+            catch(Exception e)
+            {
+                return null;
+            }
         }
         
         [HttpPost]
         public IActionResult Send([FromQuery] string date, int temperature)
-        {
-            try
+        {            
+            if(!_holder.Add(date, temperature, out errMessage))
             {
-                _holder.Add(new Temperature { Date = Convert.ToDateTime(date), Value = temperature });
-            }
-            catch (Exception e)
-            {
-                return BadRequest(e.Message);
+                return BadRequest(errMessage);
             }
             return Ok();
         }
         [HttpPut]
-        public IActionResult Change([FromQuery] string date, int temperaature)
+        public IActionResult Change([FromQuery] string date, int temperature)
+        {            
+            int errCode = _holder.Change(date, temperature, out errMessage);
+            if (errCode == -1)
+            {
+                return BadRequest(errMessage);
+            }            
+            return Ok();
+        }
+        [HttpDelete]
+        public IActionResult Delete([FromQuery] string inDate = "", string outDate = "")
         {
-            try
-            {
-                _holder[_holder.FindIndex(index => index.Date == Convert.ToDateTime(date))].Value = temperaature;
-            }
-            catch (Exception e)
-            {
-                return BadRequest(e.Message);
-            }
             return Ok();
         }
 
