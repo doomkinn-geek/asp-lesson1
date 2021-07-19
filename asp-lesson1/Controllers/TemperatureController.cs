@@ -18,6 +18,7 @@ namespace asp_lesson1.Controllers
         public TemperatureController(ILogger<TemperatureController> logger)
         {
             _logger = logger;
+            _holder = new List<Temperature>();            
         }
         
         [HttpPost]
